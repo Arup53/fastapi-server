@@ -29,5 +29,13 @@ class Complaints(Base):
 
     # Relationship with Users
     user = relationship("Users", back_populates="complaints")
+    resolution = relationship("Resolved", back_populates="complaint", uselist=False, cascade="all, delete")
     
-  
+class Resolved(Base):
+    __tablename__ = "resolved"
+
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    resolved = Column(String, index=True, nullable=False, default="processing")  # Default value in DB
+    complaint_id = Column(Integer, ForeignKey("complaints.id", ondelete="CASCADE"), unique=True)
+
+    complaint = relationship("Complaints", back_populates="resolution")

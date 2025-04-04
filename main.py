@@ -2,7 +2,7 @@ from fastapi import FastAPI,HTTPException, Depends
 from pydantic import BaseModel,EmailStr, Field
 from typing import List,Annotated, Optional
 import models
-from models import Users, Complaints
+from models import Users, Complaints, Resolved
 from database import engine, SessionLocal
 from sqlalchemy.orm import Session
 
@@ -19,6 +19,10 @@ class Complaint(BaseModel):
     complain_tone: Optional[str] = None  # optional if tone analysis is done later
     complain_tone_score: Optional[float] = None  # optional for same reason
     user_email: EmailStr
+
+class ResolutionCreate(BaseModel):
+    resolved: str = Field(default="processing")  # Default value for API input
+    complaint_id: int    
 
 def get_db():
     db = SessionLocal()
@@ -76,14 +80,27 @@ def create_complaint(complaint: Complaint, db: Session = Depends(get_db)):
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
+    # Create the complaint
     new_complaint = Complaints(
         complain_text=complaint.complain_text,
         complain_tone=complaint.complain_tone,
         complain_tone_score=complaint.complain_tone_score,
-        user_email=complaint.user_email,  # Use email instead of user_id
+        user_email=complaint.user_email,
     )
-
     db.add(new_complaint)
     db.commit()
     db.refresh(new_complaint)
-    return new_complaint
+
+    # Automatically create a resolution entry with "processing" status
+    new_resolution = Resolved(
+        resolved="processing",
+        complaint_id=new_complaint.id  # Link to the newly created complaint
+    )
+    db.add(new_resolution)
+    db.commit()
+    db.refresh(new_resolution)
+
+    return {
+        "complaint": new_complaint,
+        "resolution": new_resolution
+    }
