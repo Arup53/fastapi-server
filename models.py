@@ -6,19 +6,6 @@ from sqlalchemy.orm import relationship
 
 Base = declarative_base()
 
-class Questions(Base):
-    __tablename__ = 'questions'
-
-    id = Column(Integer, primary_key=True, index=True)
-    question_text = Column(String, index=True)
-
-class Choices(Base):
-    __tablename__ = 'choices'
-
-    id = Column(Integer, primary_key=True, index=True)
-    choice_text = Column(String, index=True)
-    is_correct = Column(Boolean, default=False)
-    question_id = Column(Integer, ForeignKey("questions.id"))
 
 
 class Users(Base):
@@ -38,7 +25,7 @@ class Complaints(Base):
     complain_text = Column(Text, nullable=False, index=True)  # Using Text for longer complaints
     complain_tone = Column(String, index=True, nullable=True)  # Can be 'negative', 'neutral', 'positive'
     complain_tone_score = Column(Float, index=True, nullable=True)  # Score should be float for better precision
-    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    user_email = Column(String, ForeignKey("users.email", ondelete="CASCADE"), nullable=False)
 
     # Relationship with Users
     user = relationship("Users", back_populates="complaints")
