@@ -1,10 +1,11 @@
-from fastapi import FastAPI,HTTPException, Depends
+from fastapi import FastAPI,HTTPException, Depends, Query
 from pydantic import BaseModel,EmailStr, Field
 from typing import List,Annotated, Optional
 import models
 from models import Users, Complaints, Resolved
 from database import engine, SessionLocal
 from sqlalchemy.orm import Session
+from test import run_sql_agent
 
 
 app= FastAPI() ;
@@ -104,3 +105,10 @@ def create_complaint(complaint: Complaint, db: Session = Depends(get_db)):
         "complaint": new_complaint,
         "resolution": new_resolution
     }
+
+
+
+@app.get("/run-agent")
+def run_agent_endpoint(query: str = Query(..., description="Query to run via SQL agent")):
+    return run_sql_agent(query)
+

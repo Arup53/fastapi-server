@@ -97,13 +97,14 @@ Thought:{agent_scratchpad}'''
 
     response = run_agent(query)
     print(response)
+    return response
 
 
 # query= "i am moi, what is my complaint resolved status"
 # query= "fetch me complaints with greater complaint tone"
-query= "How many complaints"
+# query= "How many complaints"
 
-run_sql_agent(query)
+# run_sql_agent(query)
 
 
 
