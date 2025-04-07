@@ -77,7 +77,6 @@ Thought:{agent_scratchpad}'''
     # name_pattern = r"\b(my name is|i am|this is|name is)\b"
     # if not re.search(name_pattern, user_input.lower()):
     #     return "Please provide your name before I can process your request."
-    
     # Block potentially dangerous SQL operations
         dangerous_patterns = [
         r"\bdelete\b", 
@@ -124,7 +123,6 @@ Thought:{agent_scratchpad}'''
 #     model="nlptown/bert-base-multilingual-uncased-sentiment",
 # )
 # print(result)
-
 
 
 # def sentiment_analysis(text): 
